@@ -3,8 +3,7 @@
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -23,10 +22,11 @@ class BlogController extends AbstractController
     /**
      * @Route("/{page}", requirements={"page": "\d+"}, name="get-all-posts")
      */
-    public function index($page= 7)
+    public function index($page= 7, Request $request)
     {
-       return new JsonResponse([
+       return $this->json([
             'page' => $page,
+            'limit' => $request->get('limit', 17),
             'posts' => array_map(function ($post){
                     return $this->generateUrl('get-one-post-by-id', ['id' => $post['id'] ]);
                                 },
@@ -42,7 +42,7 @@ class BlogController extends AbstractController
     public function postById($id)
     {
        $item  = array_search($id, array_column(self::POSTS, 'id'));
-       return new JsonResponse([
+       return $this->json([
            'Post:id' => self::POSTS[ $item ],
        ]);
     }
@@ -52,7 +52,7 @@ class BlogController extends AbstractController
     public function postBySlug($slug)
     {
        $item  = array_search($slug, array_column(self::POSTS, 'slug'));
-       return new JsonResponse([
+       return $this->json([
            'Post:slug' => self::POSTS[ $item ],
        ]);
     }
