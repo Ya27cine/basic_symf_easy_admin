@@ -2,8 +2,6 @@
 Symfony 4 avec API Plateform | Développer des Micro-services Sécurisé 
 
 ## Modules
-- Formation Introduction.
-- Différents types d'Installation.
 - Symfony - Contrôleur et Routage.
 - Base de données - Doctrine - Fixtures.
 - API Platefom - Introduction.
