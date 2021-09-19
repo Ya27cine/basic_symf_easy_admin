@@ -21,19 +21,23 @@ class BlogController extends AbstractController
     ];
 
     /**
-     * @Route("/{page}", requirements={"page": "\d+"})
+     * @Route("/{page}", requirements={"page": "\d+"}, name="get-all-posts")
      */
     public function index($page= 7)
     {
        return new JsonResponse([
             'page' => $page,
-            'posts' => self::POSTS
+            'posts' => array_map(function ($post){
+                    return $this->generateUrl('get-one-post-by-id', ['id' => $post['id'] ]);
+                                },
+                self::POSTS)
+
        ]);
        // return $this->render('base.html.twig', ['number' => 9]);
     }
 
     /**
-     * @Route("/post/{id}", requirements={"id": "\d+"} )
+     * @Route("/post/{id}", requirements={"id": "\d+"}, name="get-one-post-by-id" )
      */
     public function postById($id)
     {
@@ -43,7 +47,7 @@ class BlogController extends AbstractController
        ]);
     }
     /**
-     * @Route("/post/{slug}", )
+     * @Route("/post/{slug}", name="get-one-post-by-slug")
      */
     public function postBySlug($slug)
     {
