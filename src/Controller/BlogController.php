@@ -23,7 +23,7 @@ class BlogController extends AbstractController
     /**
      * @Route("/{page}", requirements={"page": "\d+"})
      */
-    public function index($page=7)
+    public function index($page= 7)
     {
        return new JsonResponse([
             'page' => $page,
