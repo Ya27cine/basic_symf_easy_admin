@@ -7,7 +7,9 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-
+/**
+     * @Route("/blog", )
+     */
 class BlogController extends AbstractController
 {
 
@@ -19,35 +21,33 @@ class BlogController extends AbstractController
     ];
 
     /**
-     * @Route("/blog", )
+     * @Route("/{page}", requirements={"page": "\d+"})
      */
-    public function index()
+    public function index($page=7)
     {
        return new JsonResponse([
+            'page' => $page,
             'posts' => self::POSTS
        ]);
        // return $this->render('base.html.twig', ['number' => 9]);
     }
 
     /**
-     * @Route("/blog/{id}", requirements={"id": "\d+"} )
+     * @Route("/post/{id}", requirements={"id": "\d+"} )
      */
     public function postById($id)
     {
-        $item  = array_search($id, array_column(self::POSTS, 'id'));
-
+       $item  = array_search($id, array_column(self::POSTS, 'id'));
        return new JsonResponse([
            'Post:id' => self::POSTS[ $item ],
        ]);
     }
     /**
-     * @Route("/blog/{slug}", )
+     * @Route("/post/{slug}", )
      */
     public function postBySlug($slug)
     {
-       
-        $item  = array_search($slug, array_column(self::POSTS, 'slug'));
-
+       $item  = array_search($slug, array_column(self::POSTS, 'slug'));
        return new JsonResponse([
            'Post:slug' => self::POSTS[ $item ],
        ]);
