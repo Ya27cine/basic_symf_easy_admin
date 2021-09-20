@@ -39,26 +39,34 @@ class BlogController extends AbstractController
      */
     public function index($page= 7, Request $request)
     {
-       return $this->json([
+        $repository = $this->getDoctrine()->getRepository(Post::class);
+        $posts = $repository->findAll();
+
+        return $this->json([
             'page' => $page,
             'limit' => $request->get('limit', 17),
-            'posts' => array_map(function ($post){
-                    return $this->generateUrl('get-one-post-by-id', ['id' => $post['id'] ]);
-                                },
-                self::POSTS)
-
-       ]);
+            'posts' => array_map(function (Post $post) {
+                    return [
+                        'title' => $post->getTitle(),
+                        'user' => $post->getAuthor(),
+                        'url' => $this->generateUrl('get-one-post-by-id', ['id' => $post->getId() ])
+                    ];
+                    },$posts)
+        ]);
        // return $this->render('base.html.twig', ['number' => 9]);
     }
 
     /**
      * @Route("/post/{id}", requirements={"id": "\d+"}, name="get-one-post-by-id" )
      */
-    public function postById($id)
+    public function postById($id=1)
     {
-       $item  = array_search($id, array_column(self::POSTS, 'id'));
+       //$item  = array_search($id, array_column(self::POSTS, 'id'));
+        $repository = $this->getDoctrine()->getRepository(Post::class);
+        $post = $repository->find($id);
+
        return $this->json([
-           'Post:id' => self::POSTS[ $item ],
+           'Post:id' => $post,
        ]);
     }
     /**
@@ -66,9 +74,11 @@ class BlogController extends AbstractController
      */
     public function postBySlug($slug)
     {
-       $item  = array_search($slug, array_column(self::POSTS, 'slug'));
+       //$item  = array_search($slug, array_column(self::POSTS, 'slug'));
+        $repository = $this->getDoctrine()->getRepository(Post::class);
+        $post = $repository->findOneBy(['slug' => $slug ]);
        return $this->json([
-           'Post:slug' => self::POSTS[ $item ],
+           'Post:slug' => $post,
        ]);
     }
 }
