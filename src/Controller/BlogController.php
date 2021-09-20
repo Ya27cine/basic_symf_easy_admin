@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Post;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -18,6 +19,20 @@ class BlogController extends AbstractController
         ['id' => 3, 'title' => "formation Symfony", "slug" => "formation-symfony"],
         ['id' => 4, 'title' => "formation Git", "slug" => "formation-git"],
     ];
+
+    /**
+     * @Route("/post/add", name="add-post", methods={"POST"})
+     * */
+    public function add(Request $request){
+        $serializer = $this->get('serializer');
+        $post = $serializer->deserialize($request->getContent(), Post::class, 'json');
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist( $post ); // preparation la req SQL
+        $em->flush(); // exec la req sal
+
+        return $this->json( $post );
+    }
 
     /**
      * @Route("/{page}", requirements={"page": "\d+"}, name="get-all-posts")
